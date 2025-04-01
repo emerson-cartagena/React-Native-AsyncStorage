@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,17 +9,16 @@ import {
   TouchableOpacity,
   Alert
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { guardarDatos, obtenerDatos, eliminarDatos } from './src/storage/Storage';
+
+import { saveSecureData, getSecureData, deleteSecureData } from './src/storage/SecureStorage';
 
 export default function App() {
-
   const [tarea, setTarea] = useState('');
   const [tareas, setTareas] = useState([]);
 
   useEffect(() => {
     const cargarTareas = async () => {
-      const tareasGuardadas = await obtenerDatos('tareas');
+      const tareasGuardadas = await getSecureData('tareas');
       if (tareasGuardadas) {
         setTareas(JSON.parse(tareasGuardadas));
       }
@@ -34,14 +34,14 @@ export default function App() {
     const nuevaTarea = { id: Date.now().toString(), texto: tarea };
     const nuevasTareas = [...tareas, nuevaTarea];
     setTareas(nuevasTareas);
-    guardarDatos('tareas', JSON.stringify(nuevasTareas));
+    saveSecureData('tareas', JSON.stringify(nuevasTareas));
     setTarea('');
   };
 
   const eliminarTarea = (id) => {
     const nuevasTareas = tareas.filter((t) => t.id !== id);
     setTareas(nuevasTareas);
-    guardarDatos('tareas', JSON.stringify(nuevasTareas));
+    saveSecureData('tareas', JSON.stringify(nuevasTareas));
   };
 
   return (
